@@ -1,0 +1,61 @@
+name: Scrape traffic
+
+on:
+#  push:
+  workflow_dispatch:
+#  schedule:
+#  - cron:  '*/5 * * * *'
+
+
+jobs:
+  shot-scraper:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+        cache: "pip"
+    - run: pip install -r requirements.txt
+    - name: Scrape
+      env:
+        GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
+      run: |        
+        curl "https://maps.googleapis.com/maps/api/directions/json?origin=GG49%2BCH,%20Half%20Moon%20Bay%20CA&destination=FH78%2BQJ,%20Half%20Moon%20Bay,%20California&departure_time=now&key=$GOOGLE_MAPS_KEY" | jq > one.json
+        sleep 3
+        curl "https://maps.googleapis.com/maps/api/directions/json?origin=FH78%2BQJ,%20Half%20Moon%20Bay%20CA&destination=GG49%2BCH,%20Half%20Moon%20Bay,%20California&departure_time=now&key=$GOOGLE_MAPS_KEY" | jq > two.json
+    - name: Build SQLite database
+      run: |
+        rm -f hmb.db
+        git-history file hmb.db one.json \
+        --convert '
+        try:
+            duration_in_traffic = json.loads(content)["routes"][0]["legs"][0]["duration_in_traffic"]["value"]
+            return [{"id": "one", "duration_in_traffic": duration_in_traffic}]
+        except Exception as ex:
+            return []
+        ' \
+          --full-versions \
+          --id id
+        git-history file hmb.db two.json \
+        --convert '
+        try:
+            duration_in_traffic = json.loads(content)["routes"][0]["legs"][0]["duration_in_traffic"]["value"]
+            return [{"id": "two", "duration_in_traffic": duration_in_traffic}]
+        except Exception as ex:
+            return []
+        ' \
+          --full-versions \
+          --id id --namespace item2
+    - name: Commit and push
+      run: |-
+        git config user.name "Automated"
+        git config user.email "actions@users.noreply.github.com"
+        git add -A
+        timestamp=$(date -u)
+        git commit -m "${timestamp}" || exit 0
+        git pull --rebase
+        git push
