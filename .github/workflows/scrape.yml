@@ -27,7 +27,8 @@ jobs:
         git config user.email "actions@users.noreply.github.com"
         git add -A
         timestamp=$(date -u)
-        headline=$(head -3 noms.csv | tail -1 | tr -dc '[:alnum:],')
-        git commit -m "${timestamp} ${headline}" || exit 0
+        gf_headline=$(head -3 noms.csv | tail -1 | tr -dc '[:alnum:],' | cut -d, -f2-4)
+        sm_headline=$(tail -3 smarkets-leaderboard.csv | cut -d, -f3 | tr '\n' ',')
+        git commit -m "${timestamp} GF: ${gf_headline} | Sm:   ${sm_headline}" || exit 0
         git pull --rebase
         git push
