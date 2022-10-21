@@ -16,7 +16,11 @@ jobs:
         fetch-depth: 0
     - name: Scrape
       run: |
-        wget --no-cache "https://docs.google.com/spreadsheets/d/1PRufWhh2YAoxPUJEXeVaEOe7rcT1IINOXijeLI6o9Cc/export?format=csv&_=1" -O noms.csv
+        wget --no-cache "https://docs.google.com/spreadsheets/d/1PRufWhh2YAoxPUJEXeVaEOe7rcT1IINOXijeLI6o9Cc/export?format=csv" -O noms.csv
+        wget --no-cache "https://docs.google.com/spreadsheets/d/1t1MaeGTmOvmOOkUL8TDDJwqTTc-N1wmRxPeRe0k3yjM/export?gid=0&format=csv" -O smarkets-endorsements.csv
+        wget --no-cache "https://docs.google.com/spreadsheets/d/1t1MaeGTmOvmOOkUL8TDDJwqTTc-N1wmRxPeRe0k3yjM/export?gid=400125858&format=csv" -O smarkets-leaderboard.csv
+        wget --no-cache "https://docs.google.com/spreadsheets/d/1t1MaeGTmOvmOOkUL8TDDJwqTTc-N1wmRxPeRe0k3yjM/export?gid=1659341012&format=csv" -O smarkets-candidates.csv
+
     - name: Commit and push
       run: |-
         git config user.name "Automated"
