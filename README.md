@@ -8,3 +8,9 @@ A [git scraper](https://simonwillison.net/2020/Oct/9/git-scraping/) that records
 Attempts exports as CSV every 5 minutes, although Github actions seems to run less often than this.
 
 Inspired by [Simon Willison](https://twitter.com/simonw/)'s [Half Moon Bay Pumpkin Festival scraper](https://github.com/simonw/scrape-hmb-traffic).
+
+## Workflow
+- download spreadsheet as csv
+- convert to sqlite db with git-history
+- query db using sqlite-utils to export time series
+- generate graph

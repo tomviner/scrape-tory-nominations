@@ -58,6 +58,11 @@ jobs:
         order by
           commits.commit_at desc' > gf-noms-time-series.csv
 
+    - name: Generate GF graph
+      run: |
+        rm -f gf-noms-time-series.png
+        python gf_generate_graph.py
+
     - name: Commit and push
       run: |-
         git config user.name "Automated"
