@@ -33,6 +33,7 @@ jobs:
       run: |
         rm -f gf-noms.db
         git-history file gf-noms.db noms.csv \
+          --start-after 8d7041d83d9307b82cff1d580694bed781072041 \
           --ignore='' \
           --import csv \
           --import io \
@@ -41,7 +42,21 @@ jobs:
             fp = io.StringIO("\n".join(content.decode("utf-8").splitlines()[1:3]))
             return list(csv.DictReader(fp))
             ' \
-          --namespace total
+          --namespace gf_total
+
+    - name: Export GF totals time series to CSV
+      run: |
+        rm -f gf-noms-time-series.csv
+        sqlite-utils query gf-noms.db --csv 'select
+          datetime(commits.commit_at) as date,
+          gf_total.[Boris Johnson],
+          gf_total.[Rishi Sunak],
+          gf_total.[Penny Mordaunt]
+        from
+          gf_total
+          join commits on gf_total._commit = commits.id
+        order by
+          commits.commit_at desc' > gf-noms-time-series.csv
 
     - name: Commit and push
       run: |-
