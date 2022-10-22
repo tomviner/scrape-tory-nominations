@@ -1,2 +1,2 @@
-git+ssh://git@github.com/tomviner/git-history.git@item-refs-commit
+https://github.com/tomviner/git-history/archive/item-refs-commit.zip
 sqlite-utils
