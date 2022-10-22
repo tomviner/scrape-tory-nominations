@@ -1,2 +1,2 @@
-pip install git+ssh://git@github.com/tomviner/git-history.git@item-refs-commit
+git+ssh://git@github.com/tomviner/git-history.git@item-refs-commit
 sqlite-utils
