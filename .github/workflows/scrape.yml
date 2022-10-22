@@ -31,7 +31,7 @@ jobs:
 
     - name: Build SQLite database
       run: |
-        rm -f noms.db
+        rm -f gf-noms.db
         git-history file gf-noms.db noms.csv \
           --ignore='' \
           --import csv \
