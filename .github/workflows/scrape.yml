@@ -29,10 +29,10 @@ jobs:
         wget --no-cache "https://docs.google.com/spreadsheets/d/1t1MaeGTmOvmOOkUL8TDDJwqTTc-N1wmRxPeRe0k3yjM/export?gid=400125858&format=csv" -O smarkets-leaderboard.csv
         wget --no-cache "https://docs.google.com/spreadsheets/d/1t1MaeGTmOvmOOkUL8TDDJwqTTc-N1wmRxPeRe0k3yjM/export?gid=1659341012&format=csv" -O smarkets-candidates.csv
 
-    - name: Build SQLite database
+    - name: GF Build SQLite database
       run: |
-        rm -f gf-noms.db
-        git-history file gf-noms.db noms.csv \
+        rm -f all-noms.db
+        git-history file all-noms.db noms.csv \
           --start-after 8d7041d83d9307b82cff1d580694bed781072041 \
           --ignore='' \
           --import csv \
@@ -43,14 +43,31 @@ jobs:
             return list(csv.DictReader(fp))
             ' \
           --namespace gf_total
+    - name: Sm Build SQLite database
+      run: |
+        git-history file all-noms.db smarkets-leaderboard.csv \
+          --import csv \
+          --import io \
+          --convert '
+            fp = io.StringIO(content.decode("utf-8"))
+            # trim the top rows, transpose, take first 3 columns, remove dead column
+            rdr = csv.reader(fp)
+            next(rdr)
+            next(rdr)
+            next(rdr)
+            rdr = list(zip(*rdr))
+            headers, _, values = rdr[:3]
+            return [dict(zip(headers, values))]
+            ' \
+          --namespace sm_total
 
-    - name: Export GF totals time series to CSV
+    - name: GF export totals time series to CSV
       run: |
         rm -f gf-noms-time-series.csv
-        sqlite-utils query gf-noms.db --csv 'select
+        sqlite-utils query all-noms.db --csv 'select
           datetime(commits.commit_at) as date,
-          gf_total.[Boris Johnson],
           gf_total.[Rishi Sunak],
+          gf_total.[Boris Johnson],
           gf_total.[Penny Mordaunt]
         from
           gf_total
@@ -58,10 +75,25 @@ jobs:
         order by
           commits.commit_at desc' > gf-noms-time-series.csv
 
-    - name: Generate GF graph
+    - name: Sm export totals time series to CSV
+      run: |
+        rm -f smarkets-leaderboard-time-series.csv
+        sqlite-utils query all-noms.db --csv 'select
+          datetime(commits.commit_at) as date,
+          sm_total.[Rishi Sunak],
+          sm_total.[Boris Johnson],
+          sm_total.[Penny Mordaunt]
+        from
+          sm_total
+          join commits on sm_total._commit = commits.id
+        order by
+          commits.commit_at desc' > smarkets-leaderboard-time-series.csv
+
+    - name: Generate graphs
       run: |
         rm -f gf-noms-time-series.png
-        python gf_generate_graph.py
+        python generate_graph.py gf-noms-time-series.csv gf-noms-time-series.png
+        python generate_graph.py smarkets-leaderboard-time-series.csv smarkets-leaderboard-time-series.png
 
     - name: Commit and push
       run: |-
