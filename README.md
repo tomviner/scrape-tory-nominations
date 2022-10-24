@@ -43,6 +43,7 @@ cog.out(table)
 - convert to sqlite db with [git-history](https://pypi.org/project/git-history/) (see this repos requirement.txt to include https://github.com/simonw/git-history/pull/59)
 - query db using [sqlite-utils](https://pypi.org/project/sqlite-utils/) to export time series
 - generate graph
+- inject latest total to the README with [cog](https://pypi.org/project/cogapp/) content generator
 
 Attempts exports as CSV every 5 minutes, although Github actions seems to run less often than this.
 
