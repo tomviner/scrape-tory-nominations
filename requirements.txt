@@ -2,3 +2,4 @@ https://github.com/tomviner/git-history/archive/item-refs-commit.zip
 sqlite-utils
 matplotlib
 pandas
+cogapp
