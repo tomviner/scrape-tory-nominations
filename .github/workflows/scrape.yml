@@ -94,6 +94,7 @@ jobs:
         rm -f gf-noms-time-series.png
         python generate_graph.py gf-noms-time-series.csv gf-noms-time-series.png
         python generate_graph.py smarkets-leaderboard-time-series.csv smarkets-leaderboard-time-series.png
+        python generate_graph.py gf-noms-time-series.csv smarkets-leaderboard-time-series.csv joint-time-series.png
 
     - name: Commit and push
       run: |-

@@ -2,6 +2,8 @@
 
 A [git scraper](https://simonwillison.net/2020/Oct/9/git-scraping/) that records various spreadsheets containing listings of declared Conservative nominations for leadership candidates, so changes are visible.
 
+![image](https://github.com/tomviner/scrape-tory-nominations/blob/main/joint-time-series.png?raw=true)
+
 - Guido Fawkes [Tory Leadership: Who's Backing Who October Election](https://docs.google.com/spreadsheets/d/1PRufWhh2YAoxPUJEXeVaEOe7rcT1IINOXijeLI6o9Cc/htmlview)
     ![image](https://github.com/tomviner/scrape-tory-nominations/blob/main/gf-noms-time-series.png?raw=true)
 
