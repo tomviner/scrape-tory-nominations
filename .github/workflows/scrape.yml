@@ -1,10 +1,10 @@
 name: Scrape listing of declared Conservative nominations for leadership candidates
 
-on:
-  push:
-  workflow_dispatch:
-  schedule:
-  - cron:  '*/5 * * * *'
+# on:
+#   push:
+#   workflow_dispatch:
+#   schedule:
+#   - cron:  '*/5 * * * *'
 
 
 jobs:
