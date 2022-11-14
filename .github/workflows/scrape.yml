@@ -49,7 +49,6 @@ jobs:
           --import io \
           --import pandas \
           --convert '
-            fp = io.StringIO(content.decode("utf-8"))
             # trim the top rows, transpose, take first 3 columns, remove dead column
             fp = io.StringIO(content.decode("utf-8"))
             df_in = pandas.read_csv(fp)
