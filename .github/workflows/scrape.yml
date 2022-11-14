@@ -1,10 +1,10 @@
 name: Scrape listing of declared Conservative nominations for leadership candidates
 
-# on:
-#   push:
-#   workflow_dispatch:
-#   schedule:
-#   - cron:  '*/5 * * * *'
+on:
+  push:
+  workflow_dispatch:
+  # schedule:
+  # - cron:  '*/5 * * * *'
 
 
 jobs:
@@ -46,18 +46,16 @@ jobs:
     - name: Sm Build SQLite database
       run: |
         git-history file all-noms.db smarkets-leaderboard.csv \
-          --import csv \
           --import io \
+          --import pandas \
           --convert '
             fp = io.StringIO(content.decode("utf-8"))
             # trim the top rows, transpose, take first 3 columns, remove dead column
-            rdr = csv.reader(fp)
-            next(rdr)
-            next(rdr)
-            next(rdr)
-            rdr = list(zip(*rdr))
-            headers, _, values = rdr[:3]
-            return [dict(zip(headers, values))]
+            fp = io.StringIO(content.decode("utf-8"))
+            df_in = pandas.read_csv(fp)
+            df = df_in[2:].transpose()
+            df.rename(columns=df.iloc[0], inplace=True)
+            return df[2:3].to_dict('records')
             ' \
           --namespace sm_total
 
