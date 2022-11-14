@@ -54,8 +54,7 @@ jobs:
             df_in = pandas.read_csv(fp)
             df = df_in[2:].transpose()
             df.rename(columns=df.iloc[0], inplace=True)
-            print(df)
-            return df[2:3].to_dict(orient='records')
+            return df[2:3].to_dict("records")
             ' \
           --namespace sm_total
 
